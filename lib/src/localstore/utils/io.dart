@@ -45,6 +45,9 @@ final class Utils implements UtilsImpl {
         // Reads the document referenced by this [DocumentRef].
         final file = await _getFile(path);
         final randomAccessFile = file!.openSync(mode: FileMode.append);
+        if (randomAccessFile.lengthSync() == 0) {
+          return null;
+        }
         final data = await _readFile(randomAccessFile);
         randomAccessFile.closeSync();
         if (data is Map<String, dynamic>) {
@@ -95,6 +98,9 @@ final class Utils implements UtilsImpl {
       final file = await _getFile(path);
       try {
         final randomAccessFile = await file!.open(mode: FileMode.append);
+        if (randomAccessFile.lengthSync() == 0) {
+          return;
+        }
         final data = await _readFile(randomAccessFile);
         await randomAccessFile.close();
 
@@ -132,6 +138,9 @@ final class Utils implements UtilsImpl {
         final path = e.path.replaceAll(dbDir.path, '');
         final file = await _getFile(path);
         final randomAccessFile = file!.openSync(mode: FileMode.append);
+        if (randomAccessFile.lengthSync() == 0) {
+          continue;
+        }
         _readFile(randomAccessFile).then((data) {
           randomAccessFile.closeSync();
           if (data is Map<String, dynamic>) {
